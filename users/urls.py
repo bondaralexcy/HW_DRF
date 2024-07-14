@@ -8,9 +8,7 @@ from users.views import UserViewSet, PaymentsListAPIView
 app_name = UsersConfig.name
 
 router = SimpleRouter()
-router.register('', UserViewSet, basename='users')
+router.register("", UserViewSet, basename="users")
 
-urlpatterns = [
-    path('payments/', PaymentsListAPIView.as_view(), name='payments')
-]
+urlpatterns = [path("payments/", PaymentsListAPIView.as_view(), name="payments")]
 urlpatterns += router.urls

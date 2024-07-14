@@ -40,23 +40,37 @@ class User(AbstractUser):
 
 
 class Payments(models.Model):
-    CASH = 'CASH'
-    ONLINE = 'ONLINE'
+    CASH = "CASH"
+    ONLINE = "ONLINE"
     PAYMENTS_VARIANTS = (
-        (CASH, 'Наличными'),
-        (ONLINE, 'Перевод на счет'),
+        (CASH, "Наличными"),
+        (ONLINE, "Перевод на счет"),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    date = models.DateField(auto_now_add=True, verbose_name='Дата оплаты')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', blank=True, null=True)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', blank=True, null=True)
-    payment_amount = models.PositiveIntegerField(verbose_name='Сумма оплаты')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
+    date = models.DateField(auto_now_add=True, verbose_name="Дата оплаты")
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        verbose_name="Оплаченный курс",
+        blank=True,
+        null=True,
+    )
+    lesson = models.ForeignKey(
+        Lesson,
+        on_delete=models.CASCADE,
+        verbose_name="Оплаченный урок",
+        blank=True,
+        null=True,
+    )
+    payment_amount = models.PositiveIntegerField(verbose_name="Сумма оплаты")
     payment_method = models.CharField(max_length=50, choices=PAYMENTS_VARIANTS)
 
     def __str__(self):
-        return f'{self.user} - {self.course if self.course else self.lesson}'
+        return f"{self.user} - {self.course if self.course else self.lesson}"
 
     class Meta:
-        verbose_name = 'платежи'
-        verbose_name_plural = 'платежи'
+        verbose_name = "платежи"
+        verbose_name_plural = "платежи"
