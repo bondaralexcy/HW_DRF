@@ -15,10 +15,14 @@ class UserViewSet(ModelViewSet):
 class PaymentsListAPIView(ListAPIView):
     serializer_class = PaymentsSerializer
     queryset = Payments.objects.all()
+    # Фильтрация для эндпоинта вывода списка платежей
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    # фильтровать по курсу или уроку
     filterset_fields = (
         "course",
         "lesson",
     )
+    # Порядок сортировки
     ordering_fields = ("date",)
+    # фильтровать по способу оплаты
     search_fields = ("payment_method",)

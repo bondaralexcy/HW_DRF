@@ -10,6 +10,7 @@ class PaymentsSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
+    # + вывод истории платежей
     payments = PaymentsSerializer(source="payments_set", many=True, read_only=True)
 
     class Meta:
