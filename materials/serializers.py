@@ -21,5 +21,5 @@ class CourseSerializer(ModelSerializer):
         fields = "__all__"
 
     def get_lessons_count(self, instance):
-        """ Подсчет количества уроков"""
+        """Подсчет количества уроков"""
         return instance.lesson_set.count()
