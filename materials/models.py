@@ -1,4 +1,5 @@
 from django.db import models
+from config import settings
 
 
 class Course(models.Model):
@@ -17,6 +18,13 @@ class Course(models.Model):
         blank=True,
         null=True,
         help_text="Добавьте изображение",
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Владелец курса",
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
@@ -50,7 +58,6 @@ class Lesson(models.Model):
         null=True,
         help_text="Укажите ссылку на видео",
     )
-
     course = models.ForeignKey(
         Course,
         on_delete=models.SET_NULL,
@@ -58,6 +65,13 @@ class Lesson(models.Model):
         blank=True,
         null=True,
         help_text="Укажите курс",
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Владелец урока",
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
