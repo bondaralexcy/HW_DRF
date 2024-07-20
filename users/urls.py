@@ -1,10 +1,11 @@
 from django.urls import path
 from rest_framework.permissions import AllowAny
-from rest_framework.routers import SimpleRouter
+# from rest_framework.routers import SimpleRouter
 
 from users.apps import UsersConfig
 
-from users.views import (UserViewSet,
+from users.views import (
+    # UserViewSet,
     UserRetrieveUpdateAPIView,
     UserListAPIView,
     PaymentsListAPIView,
@@ -24,8 +25,8 @@ from rest_framework_simplejwt.views import (
 
 app_name = UsersConfig.name
 
-router = SimpleRouter()
-router.register("", UserViewSet, basename="users")
+# router = SimpleRouter()
+# router.register("", UserViewSet, basename="users")
 
 urlpatterns = [
     # users
@@ -36,7 +37,7 @@ urlpatterns = [
     path("users/<int:pk>/retrieve_update/", UserRetrieveUpdateAPIView.as_view(), name="users_retrieve_update"),
     path("users/<int:pk>/retrieve/", UserRetrieveAPIView.as_view(), name="users_retrieve"),
     path("users/<int:pk>/delete/", UserDeleteAPIView.as_view(), name="users_delete"),
-    # path("users/", UserListAPIView.as_view(), name="users"),
+    path("users/", UserListAPIView.as_view(), name="users"),
 
     # payments
     path("payments/", PaymentsListAPIView.as_view(), name="payments"),
@@ -45,5 +46,5 @@ urlpatterns = [
     path("payments/<int:pk>/update/", PaymentsUpdateAPIView.as_view(), name="payments_update"),
     path("payments/<int:pk>/delete/", PaymentsDestroyAPIView.as_view(), name="payments_delete"),
 ]
-urlpatterns += router.urls
+# urlpatterns += router.urls
 
