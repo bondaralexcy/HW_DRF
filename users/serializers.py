@@ -16,3 +16,9 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
+
+class SimpleUserSerializer(ModelSerializer):
+    """ Простой сериалайзер"""
+    class Meta:
+        model = User
+        fields = "__all__"

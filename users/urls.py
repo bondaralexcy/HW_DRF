@@ -4,7 +4,18 @@ from rest_framework.routers import SimpleRouter
 
 from users.apps import UsersConfig
 
-from users.views import UserViewSet, PaymentsListAPIView
+from users.views import (
+    UserRetrieveUpdateAPIView,
+    UserListAPIView,
+    PaymentsListAPIView,
+    PaymentsRetrieveAPIView,
+    PaymentsCreateAPIView,
+    PaymentsUpdateAPIView,
+    PaymentsDestroyAPIView,
+    UserCreateAPIView,
+    UserDeleteAPIView,
+    UserRetrieveAPIView,
+)
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -13,14 +24,25 @@ from rest_framework_simplejwt.views import (
 
 app_name = UsersConfig.name
 
-router = SimpleRouter()
-router.register("", UserViewSet, basename="users")
+# router = SimpleRouter()
+# router.register("", UserViewSet, basename="users")
 
 urlpatterns = [
-    path("login/", TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name="login"),
-    path("token/refresh/", TokenRefreshView.as_view(permission_classes=(AllowAny,)), name="token_refresh"),
-    # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # users
+    path('register/', UserCreateAPIView.as_view(), name='register'),
+    path('login/', TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(permission_classes=(AllowAny,)), name='token_refresh'),
+
+    path("users/<int:pk>/retrieve_update/", UserRetrieveUpdateAPIView.as_view(), name="users_retrieve_update"),
+    path("users/<int:pk>/retrieve/", UserRetrieveAPIView.as_view(), name="users_retrieve"),
+    path("users/<int:pk>/delete/", UserDeleteAPIView.as_view(), name="users_delete"),
+    path("users/", UserListAPIView.as_view(), name="users"),
+
+    # payments
     path("payments/", PaymentsListAPIView.as_view(), name="payments"),
+    path("payments/<int:pk>/", PaymentsRetrieveAPIView.as_view(), name="payments_retrieve"),
+    path("payments/create/", PaymentsCreateAPIView.as_view(), name="payments_create"),
+    path("payments/<int:pk>/update/", PaymentsUpdateAPIView.as_view(), name="payments_update"),
+    path("payments/<int:pk>/delete/", PaymentsDestroyAPIView.as_view(), name="payments_delete"),
 ]
-urlpatterns += router.urls
+# urlpatterns += router.urls
