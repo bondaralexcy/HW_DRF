@@ -16,15 +16,15 @@ from users.serializers import UserSerializer, SimpleUserSerializer, PaymentsSeri
 from users.permissions import IsOwner
 
 
-# class UserViewSet(ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-#     permission_classes = [AllowAny]
-#
-#     def perform_create(self, serializer):
-#         user = serializer.save(is_active=True)
-#         user.set_password(user.password)
-#         user.save()
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        new_user = serializer.save(is_active=True)
+        new_user.set_password(self.request.data['password'])
+        new_user.save()
 
 class UserListAPIView(ListAPIView):
     queryset = User.objects.all()
