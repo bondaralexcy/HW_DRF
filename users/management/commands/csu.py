@@ -10,5 +10,6 @@ class Command(BaseCommand):
         user.is_active = True
         user.is_staff = True
         user.is_superuser = True
+        # Метод set_password хеширует открытый пароль
         user.set_password('123')
         user.save()

@@ -1,16 +1,13 @@
-from rest_framework.generics import (
-    CreateAPIView,
-    DestroyAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-)
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from materials.models import Course, Lesson
 from materials.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator, IsOwner
+from materials.validators import validate_allow_site
 
 
 class CourseViewSet(ModelViewSet):
@@ -18,17 +15,25 @@ class CourseViewSet(ModelViewSet):
     serializer_class = CourseSerializer
 
     def perform_create(self, serializer):
-        course = serializer.save()
-        course.owner = self.request.user
-        course.save()
+        """ Метод создания записи
+            используется для автоматического добавления владельца (через ViewSet)
+        """
+        if validate_allow_site(self.request.description):
+            course = serializer.save()
+            course.owner = self.request.user
+            course.save()
+
+
+
 
     def get_permissions(self):
+        """ Метод ViewSet, который отвечает за доступ к данным"""
         if self.action == 'create':
             self.permission_classes = (~IsModerator, )
         elif self.action in ['update', 'retrieve']:
             self.permission_classes = (IsModerator | IsOwner, )
         elif self.action == 'destroy':
-            self.permission_classes = (IsOwner, )
+            self.permission_classes = (IsOwner | ~IsModerator,)
         return super().get_permissions()
 
 
@@ -38,6 +43,7 @@ class LessonCreateAPIView(CreateAPIView):
     permission_classes = (~IsModerator, IsAuthenticated)
 
     def perform_create(self, serializer):
+        """ Метод используется для автоматического добавления владельца (через Generics)"""
         lesson = serializer.save()
         lesson.owner = self.request.user
         lesson.save()
