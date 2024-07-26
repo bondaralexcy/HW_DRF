@@ -1,40 +1,56 @@
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView)
+                                     UpdateAPIView, get_object_or_404,)
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 
-from materials.models import Course, Lesson
+from materials.models import Course, Lesson, CourseSubscription
 from materials.serializers import CourseSerializer, LessonSerializer
+from materials.paginations import LessonCoursePaginator
 from users.permissions import IsModerator, IsOwner
 from materials.validators import validate_allow_site
 
 
-class CourseViewSet(ModelViewSet):
+class CourseAPIViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated,]
+    pagination_class = LessonCoursePaginator
+
 
     def perform_create(self, serializer):
         """ Метод создания записи
             используется для автоматического добавления владельца (через ViewSet)
         """
         if validate_allow_site(self.request.description):
+            # Проверили допустимость ссылки на видео
             course = serializer.save()
             course.owner = self.request.user
             course.save()
 
 
 
-
     def get_permissions(self):
         """ Метод ViewSet, который отвечает за доступ к данным"""
         if self.action == 'create':
-            self.permission_classes = (~IsModerator, )
-        elif self.action in ['update', 'retrieve']:
-            self.permission_classes = (IsModerator | IsOwner, )
+            self.permission_classes = [IsAuthenticated, ~IsModerator]
+        elif self.action == 'list':
+            self.permission_classes = [IsAuthenticated, IsOwner | IsModerator]
+        elif self.action == 'retrieve':
+            self.permission_classes = [IsAuthenticated, IsOwner | IsModerator]
+        elif self.action == 'update':
+            self.permission_classes = [IsAuthenticated, IsOwner | IsModerator]
         elif self.action == 'destroy':
-            self.permission_classes = (IsOwner | ~IsModerator,)
+            self.permission_classes = [IsAuthenticated, IsOwner, ~IsModerator]
         return super().get_permissions()
+
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        # Здесь можно добавить действие при апдейте курса
+        course.save()
 
 
 class LessonCreateAPIView(CreateAPIView):
@@ -52,6 +68,14 @@ class LessonCreateAPIView(CreateAPIView):
 class LessonListAPIView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated,]
+    pagination_class = LessonCoursePaginator
+
+
+    def get_queryset(self):
+        if self.request.user.groups.filter(name='moderators').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=self.request.user)
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
@@ -70,3 +94,22 @@ class LessonDestroyAPIView(DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsOwner)
+
+
+
+class SubscribtionCourseAPIView(APIView):
+    def post(self, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get('course')
+        course_item = get_object_or_404(Course, pk=course_id)
+        subs_item = CourseSubscription.objects.get_or_create(user=user, course=course_item)
+        # Если подписка у пользователя на этот курс есть - удаляем ее
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'подписка удалена'
+        # Если подписки у пользователя на этот курс нет - создаем ее
+        else:
+            message = 'подписка добавлена'
+        # Возвращаем ответ в API
+        return Response({"message": message})
+
