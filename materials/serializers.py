@@ -5,7 +5,7 @@ from materials.models import Course, Lesson, CourseSubscription
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    url = serializers.CharField(validators=[validate_allow_site])
+    url = serializers.CharField(validators=[validate_allow_site], read_only=True)
 
     class Meta:
         model = Lesson
@@ -25,6 +25,7 @@ class CourseSerializer(serializers.ModelSerializer):
     lessons_count = serializers.SerializerMethodField()
     # Список уроков в курсе
     lessons = LessonSerializer(source="lesson_set", many=True, read_only=True)
+    # Наличие подписки
     course_subscribe = serializers.SerializerMethodField()
 
     class Meta:
@@ -50,3 +51,8 @@ class CourseSerializer(serializers.ModelSerializer):
         course.save()
         return course
 
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseSubscription
+        fields = '__all__'
