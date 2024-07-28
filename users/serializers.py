@@ -17,8 +17,10 @@ class UserSerializer(ModelSerializer):
         model = User
         fields = "__all__"
 
+
 class SimpleUserSerializer(ModelSerializer):
-    """ Простой сериалайзер"""
+    """Простой сериалайзер"""
+
     class Meta:
         model = User
         fields = "__all__"

@@ -1,7 +1,8 @@
 # from rest_framework.fields import SerializerMethodField
 from rest_framework import serializers
+
+from materials.models import Course, CourseSubscription, Lesson
 from materials.validators import validate_allow_site
-from materials.models import Course, Lesson, CourseSubscription
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -11,9 +12,8 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = "__all__"
 
-
     def create(self, validated_data):
-        user = self.context['request'].user
+        user = self.context["request"].user
         lesson = Lesson(**validated_data)
         lesson.owner = user
         lesson.save()
@@ -36,16 +36,14 @@ class CourseSerializer(serializers.ModelSerializer):
         """Подсчет количества уроков"""
         return instance.lesson_set.count()
 
-
     def get_course_subscribe(self, instance):
-        user = self.context['request'].user
+        user = self.context["request"].user
         if CourseSubscription.objects.filter(user=user, course=instance).exists():
             return True
         return False
 
-
     def create(self, validated_data):
-        user = self.context['request'].user
+        user = self.context["request"].user
         course = Course(**validated_data)
         course.owner = user
         course.save()
@@ -55,4 +53,4 @@ class CourseSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseSubscription
-        fields = '__all__'
+        fields = "__all__"

@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG') == 'True'
+DEBUG = os.getenv("DEBUG") == "True"
 
 ALLOWED_HOSTS = []
 
@@ -40,14 +40,14 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
-
+    "django.contrib.staticfiles",  # Требуется для обработки css/js файлов Swagger-а (генератора API-документации)
+    "drf_yasg",  # Swagger
+    "corsheaders",  # CORS
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
     "users",
     "materials",
-
 ]
 
 MIDDLEWARE = [
@@ -58,6 +58,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # CORS
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -86,12 +88,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('NAME'),
-        'USER': os.getenv('USER'),
-        'PASSWORD': os.getenv('PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT'),
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("NAME"),
+        "USER": os.getenv("USER"),
+        "PASSWORD": os.getenv("PASSWORD"),
+        "HOST": os.getenv("HOST"),
+        "PORT": os.getenv("PORT"),
     }
 }
 
@@ -118,9 +120,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = "ru-ru"
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -132,15 +134,15 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / "static",
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 AUTH_USER_MODEL = "users.User"
 
@@ -158,3 +160,19 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+# для настройки CORS:
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",  # Замените на адрес вашего фронтенд-сервера
+    "https://read-and-write.example.com",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://read-and-write.example.com",  #  Замените на адрес вашего фронтенд-сервера
+    # и добавьте адрес бэкенд-сервера
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+# STRIPE
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")

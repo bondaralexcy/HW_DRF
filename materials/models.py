@@ -3,7 +3,6 @@ from django.db import models
 from config import settings
 
 
-
 class Course(models.Model):
     title = models.CharField(
         max_length=100, verbose_name="Название", help_text="Укажите название курса"
@@ -92,16 +91,14 @@ class CourseSubscription(models.Model):
         on_delete=models.CASCADE,
         verbose_name="подписчик",
         null=True,
-        blank=True)
+        blank=True,
+    )
 
-    course = models.ForeignKey(
-        Course,
-        on_delete=models.CASCADE,
-        verbose_name="курс")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="курс")
 
     class Meta:
-        verbose_name = 'подписка на курс'
+        verbose_name = "подписка на курс"
         verbose_name_plural = "подписки на курс"
 
     def __str__(self):
-        return f'{self.user} {self.course}'
+        return f"{self.user} {self.course}"
