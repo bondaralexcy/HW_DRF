@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
+    "django_celery_beat",
+
     "users",
     "materials",
 ]
@@ -97,6 +99,8 @@ DATABASES = {
     }
 }
 
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -121,11 +125,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "ru-ru"
-
 TIME_ZONE = "Europe/Moscow"
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -145,6 +146,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 AUTH_USER_MODEL = "users.User"
+
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
@@ -176,3 +178,22 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 # STRIPE
 STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
+
+# Celery Configuration Options
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = "Europe/Moscow"
+
+# CELERY_TASK_ALWAYS_EAGER =
+# CELERY_WORKER_CONCURRENCY =
+
+# CELERY_TASK_TRACK_STARTED = True
+# CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULE = {
+    'check_last_login': {
+        'task': 'users.tasks.check_last_login',
+        'schedule': timedelta(minutes=1),
+    },
+}

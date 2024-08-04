@@ -14,6 +14,7 @@ from materials.paginations import LessonCoursePaginator
 from materials.serializers import (CourseSerializer, LessonSerializer,
                                    SubscriptionSerializer)
 from users.permissions import IsModerator, IsOwner
+from materials.tasks import send_mail_about_course_update
 
 
 @method_decorator(
@@ -38,6 +39,10 @@ class CourseViewSet(ModelViewSet):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        send_mail_about_course_update.delay(course_id=course.id)
 
     def get_permissions(self):
         """Метод ViewSet, который отвечает за доступ к данным"""
