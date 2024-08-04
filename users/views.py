@@ -91,7 +91,7 @@ class PaymentsCreateAPIView(CreateAPIView):
     serializer_class = PaymentsSerializer
 
     def perform_create(self, serializer):
-        """ Обращается к Stripe для оплаты курса"""
+        """Обращается к Stripe для оплаты курса"""
         payment = serializer.save(user=self.request.user)
         product_id = create_stripe_product(payment)
         price_id = create_stripe_price(product_id, payment)

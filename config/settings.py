@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "django_filters",
     "django_celery_beat",
-
     "users",
     "materials",
 ]
@@ -192,8 +191,8 @@ CELERY_TIMEZONE = "Europe/Moscow"
 # CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
-    'check_last_login': {
-        'task': 'users.tasks.check_last_login',
-        'schedule': timedelta(minutes=1),
+    "check_last_login": {
+        "task": "users.tasks.check_last_login",
+        "schedule": timedelta(minutes=1),
     },
 }

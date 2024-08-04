@@ -13,8 +13,8 @@ from materials.models import Course, CourseSubscription, Lesson
 from materials.paginations import LessonCoursePaginator
 from materials.serializers import (CourseSerializer, LessonSerializer,
                                    SubscriptionSerializer)
-from users.permissions import IsModerator, IsOwner
 from materials.tasks import send_mail_about_course_update
+from users.permissions import IsModerator, IsOwner
 
 
 @method_decorator(

@@ -49,11 +49,7 @@ urlpatterns = [
         PaymentsRetrieveAPIView.as_view(),
         name="payments_retrieve",
     ),
-    path(
-         "payments/create/",
-         PaymentsCreateAPIView.as_view(),
-         name="payments_create"
-         ),
+    path("payments/create/", PaymentsCreateAPIView.as_view(), name="payments_create"),
     path(
         "payments/<int:pk>/update/",
         PaymentsUpdateAPIView.as_view(),

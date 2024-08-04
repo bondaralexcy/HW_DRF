@@ -12,4 +12,3 @@ def check_last_login():
     month_ago = now - relativedelta(months=1)
     users = User.objects.filter(is_active=True, last_login__lte=month_ago)
     users.update(is_active=False)
-
