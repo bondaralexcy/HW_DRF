@@ -141,3 +141,14 @@ https://stripe.com/docs/api/checkout/sessions/retrieve —
 
 С помощью celery-beat реализуйте фоновую задачу, которая будет проверять пользователей по дате последнего входа по полю last_login
 и, если пользователь не заходил более месяца, блокировать его с помощью флага is_active.
+
+# HomeWork 27.2. Docker Compose
+
+Задачи
+ 1. Опишите Dockerfile для запуска контейнера с проектом.
+ 2. Оберните в Docker Compose Django-проект с БД PostgreSQL.
+ 3. Допишите в docker-compose.yaml работу с Redis.
+ 4. Допишите в docker-compose.yaml работу с Celery.
+
+Для запуска проекта с помощью docker нужно в терминале ввести команду: 
+> docker-compose up -d --build
